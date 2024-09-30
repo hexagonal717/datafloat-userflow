@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   blockUser,
   unblockUser,
   removeUser,
   logoutUser,
+  updateUser,
 } from '../redux/user/userSlice.js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,12 +15,23 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { ChevronDown, Clock, User, Mail, Shield, ShieldOff } from 'lucide-react';
+import { ChevronDown, Clock, User, Mail, Shield, ShieldOff, Edit } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const UsersList = () => {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.usersSlice.users);
+  const [editingUser, setEditingUser] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleBlock = (id) => {
     dispatch(blockUser(id));
@@ -34,6 +47,22 @@ const UsersList = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
+  };
+
+  const handleEditUser = (user) => {
+    setEditingUser({ ...user });
+    setIsDialogOpen(true);
+  };
+
+  const handleUpdateUser = () => {
+    dispatch(updateUser(editingUser));
+    setEditingUser(null);
+    setIsDialogOpen(false);
+  };
+
+  const handleCloseDialog = () => {
+    setEditingUser(null);
+    setIsDialogOpen(false);
   };
 
   return (
@@ -118,6 +147,51 @@ const UsersList = () => {
                         </CollapsibleContent>
                       </Collapsible>
                       <div className="mt-4 flex justify-end space-x-2">
+                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                          <DialogTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="w-20 text-xs"
+                              onClick={() => handleEditUser(user)}>
+                              <Edit className="mr-2 h-4 w-4" />
+                              Edit
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Edit User</DialogTitle>
+                            </DialogHeader>
+                            {editingUser && (
+                              <div className="space-y-4">
+                                <div>
+                                  <Label htmlFor="name">Name</Label>
+                                  <Input
+                                    id="name"
+                                    value={editingUser.name}
+                                    onChange={(e) =>
+                                      setEditingUser({ ...editingUser, name: e.target.value })
+                                    }
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor="email">Email</Label>
+                                  <Input
+                                    id="email"
+                                    value={editingUser.email}
+                                    onChange={(e) =>
+                                      setEditingUser({ ...editingUser, email: e.target.value })
+                                    }
+                                  />
+                                </div>
+                                <div className="flex justify-end space-x-2">
+                                  <Button onClick={handleCloseDialog} variant="outline">Cancel</Button>
+                                  <Button onClick={handleUpdateUser}>Update User</Button>
+                                </div>
+                              </div>
+                            )}
+                          </DialogContent>
+                        </Dialog>
                         {user?.isBlocked ? (
                           <Button
                             size="sm"
