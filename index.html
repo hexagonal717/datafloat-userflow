@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0 user-scalable=no" />
+    <title>Datafloat Test App</title>
+    <meta name="description" content="A User Management App" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
+    <link
+      rel="apple-touch-icon"
+      href="/public/apple-touch-icon.png"
+      sizes="180x180" />
+    <link rel="mask-icon" href="/public/favicon.svg" color="#171717" />
+    <meta id="theme-color" name="theme-color" content="#171717" />
+
+    <!-- iOS Splash Screens -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/public/apple-splash-2048-2732.png"
+      media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" />
+    <link
+      rel="apple-touch-startup-image"
+      href="/public/apple-splash-1668-2388.png"
+      media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" />
+    <!-- Add more splash screen sizes as necessary -->
+
+    <!-- iOS meta tags -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Testing Area" />
+
+    <!-- Windows meta tags -->
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/public/ms-icon-144x144.png" />
+
+    <!-- Service Worker -->
+    <script src="/registerSW.js" type="module"></script>
+
+    <!-- Dynamic Theme Color Script -->
+    <script>
+      function updateThemeColor() {
+        const darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const themeColor = darkMode ? '#171717' : '#F5F5F5';
+
+        // Update theme color meta tag
+        document.getElementById('theme-color').setAttribute('content', themeColor);
+
+        // Update the manifest theme color dynamically if necessary
+        const manifestLink = document.querySelector('link[rel="manifest"]');
+        if (manifestLink) {
+          fetch(manifestLink.href)
+            .then((response) => response.json())
+            .then((manifest) => {
+              manifest.theme_color = themeColor;
+              const blob = new Blob([JSON.stringify(manifest)], {
+                type: 'application/json',
+              });
+              manifestLink.href = URL.createObjectURL(blob);
+            });
+        }
+      }
+
+      // Update theme color on initial load
+      updateThemeColor();
+
+      // MediaQueryList to check for dark mode changes
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+      // Use addEventListener if available, otherwise fall back to addListener
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener('change', updateThemeColor);
+      } else {
+        mediaQuery.addListener(updateThemeColor);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="/src/main.jsx" type="module"></script>
+  </body>
+</html>
