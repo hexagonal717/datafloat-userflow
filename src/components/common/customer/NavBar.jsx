@@ -78,7 +78,7 @@ const NavBar = ({ user }) => {
   return (
     <>
       <div
-        className="fixed z-40 h-16 w-full select-none flex-col items-center bg-neutral-100 p-3 px-6
+        className="fixed z-40 h-16 w-full select-none flex-col items-center bg-white p-3 px-6
           outline outline-1 outline-neutral-300 backdrop-blur-sm dark:bg-neutral-950
           dark:outline-neutral-800 sm:flex sm:h-16">
         <ul
@@ -101,7 +101,7 @@ const NavBar = ({ user }) => {
               <Button
                 variant="outline"
                 onClick={toggleMobileModal}
-                className="rounded-lg dark:text-white">
+                className="rounded-lg">
                 <User className="h-4 w-4" />
               </Button>
             </div>

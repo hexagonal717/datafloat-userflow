@@ -33,8 +33,8 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center dark:bg-neutral-950 p-4">
-      <Card className="max-w-xl ">
+    <div className="flex min-h-screen items-center justify-center bg-white dark:bg-neutral-950 p-4">
+      <Card className="flex flex-col w-full sm:max-w-xl border-0 shadow-none sm:shadow-sm sm:border">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Register</CardTitle>
           <CardDescription>Create a new account to get started.</CardDescription>
@@ -47,6 +47,7 @@ const RegisterPage = () => {
                 type="text"
                 id="name"
                 name="name"
+                placeholder="Enter your name"
                 value={formData.name}
                 onChange={handleInputChange}
                 required
@@ -58,6 +59,7 @@ const RegisterPage = () => {
                 type="email"
                 id="email"
                 name="email"
+                placeholder="Enter your email address"
                 value={formData.email}
                 onChange={handleInputChange}
                 required
@@ -69,6 +71,7 @@ const RegisterPage = () => {
                 type="password"
                 id="password"
                 name="password"
+                placeholder="Enter your password"
                 value={formData.password}
                 onChange={handleInputChange}
                 required

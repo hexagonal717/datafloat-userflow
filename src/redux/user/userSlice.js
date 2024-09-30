@@ -44,25 +44,25 @@ const userSlice = createSlice({
       state.authError = null;
     },
     blockUser: (state, action) => {
-      const userIndex = state.users.findIndex((user) => user.id === action.payload);
+      const userIndex = state.users.findIndex((user) => user.email === action.payload);
       if (userIndex !== -1) {
         state.users[userIndex].isBlocked = true;
       }
     },
     unblockUser: (state, action) => {
-      const userIndex = state.users.findIndex((user) => user.id === action.payload);
+      const userIndex = state.users.findIndex((user) => user.email === action.payload);
       if (userIndex !== -1) {
         state.users[userIndex].isBlocked = false;
       }
     },
     updateUser: (state, action) => {
-      const userIndex = state.users.findIndex((user) => user.id === action.payload.id);
+      const userIndex = state.users.findIndex((user) => user.email === action.payload.email);
       if (userIndex !== -1) {
         state.users[userIndex] = action.payload;
       }
     },
     removeUser: (state, action) => {
-      state.users = state.users.filter((user) => user.id !== action.payload);
+      state.users = state.users.filter((user) => user.email !== action.payload);
     },
     clearAuthError: (state) => {
       state.authError = null;

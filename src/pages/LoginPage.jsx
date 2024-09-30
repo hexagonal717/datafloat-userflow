@@ -34,8 +34,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center dark:bg-neutral-950 p-4">
-      <Card className="max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-white dark:bg-neutral-950 p-4">
+      <Card className="flex flex-col w-full sm:max-w-xl border-0 shadow-none sm:shadow-sm sm:border">
         <CardHeader>
           <CardTitle>Login</CardTitle>
           <CardDescription>Enter your credentials to access your account.</CardDescription>
@@ -53,6 +53,7 @@ const LoginPage = () => {
                 type="email"
                 id="email"
                 name="email"
+                placeholder="Enter your email address"
                 value={formData.email}
                 onChange={handleInputChange}
                 required
@@ -64,6 +65,7 @@ const LoginPage = () => {
                 type="password"
                 id="password"
                 name="password"
+                placeholder="Enter your password"
                 value={formData.password}
                 onChange={handleInputChange}
                 required
