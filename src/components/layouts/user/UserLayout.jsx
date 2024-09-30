@@ -10,18 +10,12 @@ const UserLayout = block(() => {
   const currentUser = useSelector((state) => state.usersSlice.currentUser);
   const location = useLocation();
   const { darkMode, toggleDarkMode } = useDarkMode();
-  const ignoreLocations = [
-    '/login',
-    '/register',
-  ];
+  const ignoreLocations = ['/register'];
   const shouldIgnore = ignoreLocations.includes(location.pathname);
-
-
 
   return (
     <div
-      className={`flex min-h-screen flex-col bg-neutral-100 font-inter text-neutral-950 dark:bg-neutral-900
-        dark:text-white`}>
+      className={`${darkMode && 'dark'} flex min-h-screen flex-col font-inter bg-white dark:bg-neutral-950/70`}>
       <div className="w-full">
         {!shouldIgnore && <NavBar user={currentUser} />}
         <Button

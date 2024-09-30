@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   blockUser,
@@ -23,6 +23,9 @@ import {
   Edit,
   RotateCcw,
   Calendar,
+  Trash,
+  ShieldCheck,
+  ShieldBan,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -40,18 +43,19 @@ const UsersList = () => {
   const users = useSelector((state) => state.usersSlice.users);
   const [editingUser, setEditingUser] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isPrevLogsCollapsibleOpen, setIsPrevLogsCollapsibleOpen] = useState(false); // Track collapsible state
+  const [isPrevLogsCollapsibleOpen, setIsPrevLogsCollapsibleOpen] = useState(false);
+  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
 
-  const handleBlock = (id) => {
-    dispatch(blockUser(id));
+  const handleBlock = (email) => {
+    dispatch(blockUser(email));
   };
 
-  const handleUnblock = (id) => {
-    dispatch(unblockUser(id));
+  const handleUnblock = (email) => {
+    dispatch(unblockUser(email));
   };
 
-  const handleRemove = (id) => {
-    dispatch(removeUser(id));
+  const handleRemove = (email) => {
+    dispatch(removeUser(email));
   };
 
   const handleEditUser = (user) => {
@@ -71,39 +75,39 @@ const UsersList = () => {
   };
 
   return (
-    <div className="flex h-full justify-center pt-16 dark:bg-neutral-950 sm:p-4 sm:pt-20">
-      <Card className="min-h-screen w-full max-w-3xl rounded-none sm:rounded-md">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 dark:border-neutral-800">
-          <CardTitle className="flex w-full items-center justify-center text-2xl font-bold">
-            Users List
+    <div className="flex h-full justify-center pt-16 sm:p-4 sm:pt-20">
+      <Card
+        className="min-h-screen w-full max-w-3xl rounded-none border-0 bg-[#f5f5f5] sm:rounded-md
+          sm:border">
+        <CardHeader className="flex flex-row items-center justify-between dark:border-neutral-800">
+          <CardTitle className="flex w-full items-center text-sm font-bold uppercase sm:text-lg">
+            user List
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className={'px-4'}>
           <ul className="space-y-6">
-            {users.map((user,index) => (
+            {users.map((user, index) => (
               <li key={index}>
-                <Card className="overflow-hidden transition-all hover:shadow-md">
-                  <CardContent className="p-6">
+                <Card className="overflow-hidden rounded-2xl shadow-none transition-all">
+                  <CardContent className="p-5">
                     <div className="mb-4 flex items-center space-x-3">
-                      {user?.isBlocked ? (
-                        <Badge
-                          variant="destructive"
-                          className="flex items-center space-x-1 bg-yellow-500/50 px-2.5 py-1.5 text-yellow-800
-                            hover:bg-yellow-500/50 dark:border-yellow-500/10 dark:bg-yellow-500/15
-                            dark:text-yellow-300 dark:hover:bg-yellow-500/15">
-                          <ShieldOff className="h-4 w-4" />
-                          <span>Blocked</span>
-                        </Badge>
-                      ) : (
-                        <Badge
-                          variant="secondary"
-                          className="flex items-center space-x-1 bg-springgreen-100 px-2.5 py-1.5 text-springgreen-900
-                            hover:bg-springgreen-100 dark:border-springgreen-500/10 dark:bg-springgreen-500/15
-                            dark:text-springgreen-400 dark:hover:bg-springgreen-500/15">
-                          <Shield className="h-4 w-4" />
-                          <span>Active</span>
-                        </Badge>
-                      )}
+                      <Badge
+                        variant={user?.isBlocked ? 'destructive' : 'secondary'}
+                        className={`flex w-max items-center justify-center space-x-1 px-2.5 py-1.5 pr-3 ${
+                        user?.isBlocked
+                            ? `bg-yellow-500/50 text-yellow-800 dark:border-yellow-500/10 dark:bg-yellow-500/15
+                              dark:text-yellow-300`
+                            : `bg-springgreen-100 text-springgreen-900 hover:bg-springgreen-100
+                              dark:border-springgreen-500/10 dark:bg-springgreen-500/15 dark:text-springgreen-400
+                              dark:hover:bg-springgreen-500/15`
+                        }`}>
+                        {user?.isBlocked ? (
+                          <ShieldOff className="h-3.5 w-4" />
+                        ) : (
+                          <Shield className="h-3.5 w-4" />
+                        )}
+                        <span>{user?.isBlocked ? 'Blocked' : 'Active'}</span>
+                      </Badge>
                     </div>
                     <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                       <div className="flex items-center space-x-3">
@@ -120,27 +124,33 @@ const UsersList = () => {
                       key={index}
                       onOpenChange={setIsPrevLogsCollapsibleOpen}
                       className={`${isPrevLogsCollapsibleOpen ? 'dark:bg-neutral-900/50 dark:hover:bg-neutral-900/50' : 'dark:bg-neutral-950 dark:hover:bg-neutral-900'}
-                      rounded-md border transition-colors hover:bg-neutral-100 dark:border-neutral-800`}>
+                      rounded-lg border transition-colors hover:bg-neutral-100 dark:border-neutral-800`}>
                       <CollapsibleTrigger className="flex w-full items-center justify-between p-4 text-xs">
                         <span className="flex items-center">
                           <RotateCcw className="mr-2 h-4 w-4" />
-                          Previous Logins
+                          Previous entries
                         </span>
-                        <ChevronDown className="h-4 w-4" />
+
+                        <ChevronDown
+                          className={`h-4 w-4 transition-transform duration-200
+                          ${isPrevLogsCollapsibleOpen ? 'rotate-180' : ''}`}
+                        />
                       </CollapsibleTrigger>
-                      <CollapsibleContent className="space-y-2 bg-neutral-100 p-4 dark:bg-neutral-950/60">
-                        <ScrollArea className={'h-24'}>
+                      <CollapsibleContent className="space-y-2 rounded-lg bg-neutral-100 p-4 dark:bg-neutral-950/60">
+                        <ScrollArea className={'h-36'}>
                           {user?.loginHistory && user.loginHistory.length > 0 ? (
                             <ul className="space-y-2">
-                              {user.loginHistory.slice() // Create a shallow copy of the array
-                                .reverse().map((login, index) => (
-                                <li
-                                  key={index}
-                                  className="bg-muted flex items-center rounded-md p-2 text-xs">
-                                  <Calendar className="text-muted-foreground mr-2 h-3 w-3" />
-                                  {new Date(login).toLocaleString()}
-                                </li>
-                              ))}
+                              {user.loginHistory
+                                .slice() // Create a shallow copy of the array
+                                .reverse()
+                                .map((login, index) => (
+                                  <li
+                                    key={index}
+                                    className="bg-muted flex items-center rounded-md p-2 text-xs">
+                                    <Calendar className="text-muted-foreground mr-2 h-3 w-3" />
+                                    {new Date(login).toLocaleString()}
+                                  </li>
+                                ))}
                             </ul>
                           ) : (
                             <p className="text-muted-foreground text-xs">
@@ -162,13 +172,13 @@ const UsersList = () => {
                             Edit
                           </Button>
                         </DialogTrigger>
-                        <DialogContent>
+                        <DialogContent className={'rounded-lg w-[calc(100vw-2rem)]'}>
                           <DialogHeader>
                             <DialogTitle>Edit User</DialogTitle>
                           </DialogHeader>
                           {editingUser && (
                             <div className="space-y-4">
-                              <div>
+                              <div className="flex flex-col space-y-2.5">
                                 <Label htmlFor="name">Name</Label>
                                 <Input
                                   id="name"
@@ -181,7 +191,7 @@ const UsersList = () => {
                                   }
                                 />
                               </div>
-                              <div>
+                              <div className="flex flex-col space-y-2.5">
                                 <Label htmlFor="email">Email</Label>
                                 <Input
                                   id="email"
@@ -208,32 +218,53 @@ const UsersList = () => {
                           )}
                         </DialogContent>
                       </Dialog>
-                      {user?.isBlocked ? (
-                        <Button
-                          size="sm"
-                          onClick={() => handleUnblock(user?.id)}
-                          variant="secondary"
-                          className="w-20 bg-springgreen-100 text-xs text-green-900 hover:bg-springgreen-200
-                            dark:bg-springgreen-500/20 dark:text-springgreen-400 dark:hover:bg-springgreen-500/15">
-                          Unblock
-                        </Button>
-                      ) : (
-                        <Button
-                          size="sm"
-                          onClick={() => handleBlock(user?.id)}
-                          variant="warning"
-                          className="w-20 bg-yellow-500/50 text-xs font-bold text-yellow-700 hover:bg-yellow-500/60
-                            dark:bg-yellow-500/10 dark:text-yellow-400 dark:hover:bg-yellow-500/15">
-                          Block
-                        </Button>
-                      )}
                       <Button
                         size="sm"
-                        onClick={() => handleRemove(user?.id)}
-                        variant="destructive"
-                        className="w-20 text-xs">
-                        Remove
+                        onClick={() =>
+                        user?.isBlocked
+                            ? handleUnblock(user?.email)
+                            : handleBlock(user?.email)
+                        }
+                        variant={user?.isBlocked ? 'secondary' : 'warning'}
+                        className={`w-24 text-xs font-normal ${
+                          user?.isBlocked
+                            ? `bg-springgreen-100 text-green-900 hover:bg-springgreen-200 dark:bg-springgreen-500/10
+                              dark:text-springgreen-400 dark:hover:bg-springgreen-500/15`
+                            : `bg-yellow-500/50 text-yellow-950 hover:bg-yellow-500/60 dark:bg-yellow-500/10
+                              dark:text-yellow-400 dark:hover:bg-yellow-500/15`
+                        }`}>
+                        {user?.isBlocked ? (
+                          <ShieldCheck className="mr-1 h-3.5 w-3.5" />
+                        ) : (
+                          <ShieldBan className="mr-1 h-3.5 w-3.5" />
+                        )}
+
+                        {user?.isBlocked ? 'Unblock' : 'Block'}
                       </Button>
+
+                      <Dialog
+                        open={isRemoveDialogOpen}
+                        onOpenChange={setIsRemoveDialogOpen}>
+                        <DialogTrigger asChild>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            className="w-24 text-xs">
+                            <Trash className="mr-2 h-4 w-4" />
+                            Remove
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className={'rounded-lg w-[calc(100vw-2rem)]'}>
+                          <DialogHeader>
+                            <DialogTitle className={'mb-10'}>
+                              Remove this user?
+                            </DialogTitle>
+                          </DialogHeader>
+                          <Button onClick={()=>handleRemove(user?.email)} variant={'destructive'}>Remove</Button>
+                          <Button onClick={()=>setIsRemoveDialogOpen(false)} variant={'secondary'}>Cancel</Button>
+
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </CardContent>
                 </Card>

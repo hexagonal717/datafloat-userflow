@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { User, ChevronDown, LogOut, ScrollText } from 'lucide-react';
+import { ChevronDown, LogOut, } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
