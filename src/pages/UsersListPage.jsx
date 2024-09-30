@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   blockUser,
   unblockUser,
   removeUser,
-  logoutUser,
   updateUser,
 } from '../redux/user/userSlice.js';
 import { Button } from '@/components/ui/button';
@@ -43,15 +42,6 @@ const UsersList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isPrevLogsCollapsibleOpen, setIsPrevLogsCollapsibleOpen] = useState(false); // Track collapsible state
 
-  const handlePrevLogsCollapsibleChange = (open) => {
-    setIsPrevLogsCollapsibleOpen(open);
-    if (open) {
-      console.log('Collapsible is now open');
-    } else {
-      console.log('Collapsible is now closed');
-    }
-  };
-
   const handleBlock = (id) => {
     dispatch(blockUser(id));
   };
@@ -62,22 +52,6 @@ const UsersList = () => {
 
   const handleRemove = (id) => {
     dispatch(removeUser(id));
-  };
-
-  const handleEditUser = (user) => {
-    setEditingUser({ ...user });
-    setIsDialogOpen(true);
-  };
-
-  const handleUpdateUser = () => {
-    dispatch(updateUser(editingUser));
-    setEditingUser(null);
-    setIsDialogOpen(false);
-  };
-
-  const handleCloseDialog = () => {
-    setEditingUser(null);
-    setIsDialogOpen(false);
   };
 
   const handleEditUser = (user) => {
