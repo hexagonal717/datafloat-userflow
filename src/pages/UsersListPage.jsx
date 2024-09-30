@@ -58,6 +58,22 @@ const UsersList = () => {
     dispatch(removeUser(email));
   };
 
+  const handleEditUser = (user) => {
+    setEditingUser({ ...user });
+    setIsDialogOpen(true);
+  };
+
+  const handleUpdateUser = () => {
+    dispatch(updateUser(editingUser));
+    setEditingUser(null);
+    setIsDialogOpen(false);
+  };
+
+  const handleCloseDialog = () => {
+    setEditingUser(null);
+    setIsDialogOpen(false);
+  };
+
   return (
     <div className="flex h-full justify-center pt-16 sm:p-4 sm:pt-20">
       <Card
